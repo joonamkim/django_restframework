@@ -15,6 +15,9 @@ def get_delete_udpate_puppy(request, pk):
 
     # get details of a single puppy
     if request.method == 'GET':
+        serializer = PuppySerializer(puppy)
+        return Response(serializer.data)
+
         return Response({})
     # delete a single puppy
     elif request.method == 'DELETE':
@@ -28,7 +31,19 @@ def get_delete_udpate_puppy(request, pk):
 def get_post_puppies(request):
     # get all puppies
     if request.method == 'GET':
-        return Response({})
+        puppies = Puppy.objects.all()
+        serializer = PuppySerializer(puppies, many=True)
+        return Response(serializer.data)
     # insert a new record of a puppy
     elif request.method == 'POST':
-        return Response({})
+        data = {
+            'name': request.data.get('name'),
+            'age': int(request.data.get('age')),
+            'breed': request.data.get('breed'),
+            'color': request.data.get('color')
+        }
+        serializer = PuppySerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
