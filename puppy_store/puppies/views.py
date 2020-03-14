@@ -18,13 +18,16 @@ def get_delete_udpate_puppy(request, pk):
         serializer = PuppySerializer(puppy)
         return Response(serializer.data)
 
-        return Response({})
     # delete a single puppy
     elif request.method == 'DELETE':
         return Response({})
     # update details of a single puppy
     elif request.method == 'PUT':
-        return Response({})
+        serializer = PuppySerializer(puppy, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'POST'])
