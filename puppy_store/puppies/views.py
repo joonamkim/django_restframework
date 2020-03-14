@@ -20,7 +20,8 @@ def get_delete_udpate_puppy(request, pk):
 
     # delete a single puppy
     elif request.method == 'DELETE':
-        return Response({})
+        puppy.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     # update details of a single puppy
     elif request.method == 'PUT':
         serializer = PuppySerializer(puppy, data=request.data)
